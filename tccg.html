@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-cn" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>Thaumcraft Research Page Generator</title>
+    <style>
+        body{
+            font-size: 24px;
+            font-family: Georgia,Microsoft YaHei;
+            margin:0px;
+            padding: 0px;
+        }
+
+        .btns{
+            border:1px solid black;
+            width:30%;
+            height:50px;
+            background-color: lightgrey;
+            float:left;
+            margin-left: 2%;
+        }
+        .header_box{
+            
+        }
+        .emoji_btn{
+            background-color:aliceblue;
+            display:inline-block;
+            width: 40px;
+            height:48px;
+            text-align:center;
+            font-size:150%;
+        }
+        .table{
+            table-layout:fixed;
+            text-align:center;
+        }
+        .tableTR{
+            height: 50px;
+        }
+        .tableTD{
+            width: 50px;
+            border: 1px solid blue;
+            overflow:hidden;
+        }
+        td input{
+            width:100%;
+        }
+    </style>
+    <script src="./tccg.js"></script>
+</head>
+
+<body>
+    <div id="header_bar">
+        <div class="header_box" id="header_logo" style="font-size:125%;display:inline;margin-right:50px">TCCG</div>
+        <div class="header_box" id="header_catas" style="display:inline;">
+            <span class="emoji_btn" style="color:greenyellow" onclick="tccg.demo.genTable();">💫</span>
+            <span class="emoji_btn" style="color:green" onclick="tccg.util.showView('main');tccg.gui.reShow()">👁</span>
+            <span class="emoji_btn" style="color:greenyellow" onclick="tccg.util.showView('addItem')">＋</span>
+            <span class="emoji_btn" style="color:cornflowerblue" onclick="tccg.util.showView('editItem')">🛠</span>
+            <span class="emoji_btn" style="color:darkred" onclick="tccg.util.showView('removeItem')">✖</span>
+            <span class="emoji_btn" style="color:seagreen" onclick="tccg.util.showView('gen'); tccg.gui.gen();">✔</span>
+            <span class="emoji_btn" style="color:seagreen" onclick="tccg.util.showView('gen'); tccg.gui.genInner();">🔺</span>
+            <span class="emoji_btn" style="color:seagreen" onclick="tccg.util.showView('import');">🔻</span>
+            <span class="emoji_btn" style="color:seagreen" onclick="tccg.util.showView('info');">🥇</span>
+        </div>
+    </div>
+
+    <div id="views">
+        <div id="view_main" style="width:100%;overflow:scroll">
+            raws<br>
+        </div>
+
+        <div id="view_addItem"><h3>添加条目</h3>
+        <table>
+            <tr>
+                <td>条目名称</td>
+                <td><input type="text" id="gui_addItemName"></td>
+            </tr>
+            <tr>
+                <td>横行x</td>
+                <td><input type="number" step="1" id="gui_addItemX"></td>
+            </tr>
+            <tr>
+                <td>竖列y</td>
+                <td><input type="number" step="1" id="gui_addItemY"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="添加" onclick="tccg.gui.addItem(); tccg.util.showView('main');tccg.gui.reShow();"></td>
+            </tr>
+        </table>
+        </div>
+
+        <div id="view_editItem"><h3>编辑条目</h3>
+        <table>
+            <tr>
+                <td>条目名称</td>
+                <td><input type="text" id="gui_editItemName"></td>
+            </tr>
+            <tr>
+                <td>横行x</td>
+                <td><input type="number" step="1" id="gui_editItemX"></td>
+            </tr>
+            <tr>
+                <td>竖列y</td>
+                <td><input type="number" step="1" id="gui_editItemY"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="修改" onclick="tccg.gui.editItem();tccg.util.showView('main');tccg.gui.reShow();"></td>
+            </tr>
+        </table>
+        </div>
+
+        <div id="view_removeItem"><h3>移除条目</h3>
+        <table>
+                
+            <tr>
+                <td></td>
+                <td><input type="submit" value="删除" onclick="tccg.gui.removeItem();tccg.util.showView('main');tccg.gui.reShow();"></td>
+            </tr>
+        </table>
+        </div>
+
+        <div id="view_gen">gen</div>
+        <div id="view_import"><h3>自中间码导入</h3>
+        <textarea id="in_import_inner"></textarea>
+        <input type="submit" value="导入" onclick="tccg.gui.fromInner();tccg.util.showView('main');tccg.gui.reShow();">
+        </div>
+
+        <div id="view_info"><h3>信息</h3>
+            <h2 id="info_fullname">-</h2><h4 id="info_version">-</h4>
+            <p>一个用来生成神秘时代4mod神秘手册研究条目的代码的小工具</p>
+            <p id="info_author">-</p>
+
+        </div>
+    </div>
+
+    <div id="ctrls" style="position:fixed;bottom:0px;width:100%;display:none">
+        <div class="btns" onclick="tccg.util.showView('main');">main</div>
+        <div class="btns" onclick="tccg.util.showView('addItem');">add Item</div>
+    </div>
+
+
+
+    <script>
+        tccg.util.initViews(["main", "addItem", "editItem", "removeItem", "gen", "info","import"]);
+        tccg.runtime.stor = new tccg.util.storage();
+        tccg.demo.genTable();
+        tccg.util.showView('main');
+        tccg.info.reShow();
+    </script>
+</body>
+
+</html>
