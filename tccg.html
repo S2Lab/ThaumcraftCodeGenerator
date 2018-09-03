@@ -57,12 +57,14 @@
             <span class="emoji_btn" style="color:greenyellow" onclick="tccg.demo.genTable();">💫</span>
             <span class="emoji_btn" style="color:green" onclick="tccg.util.showView('main');tccg.gui.reShow()">👁</span>
             <span class="emoji_btn" style="color:greenyellow" onclick="tccg.util.showView('addItem')">＋</span>
-            <span class="emoji_btn" style="color:cornflowerblue" onclick="tccg.util.showView('editItem')">🛠</span>
-            <span class="emoji_btn" style="color:darkred" onclick="tccg.util.showView('removeItem')">✖</span>
+            <span class="emoji_btn" style="color:cornflowerblue" onclick="tccg.gui.itemEditClick()">🛠</span>
+            <span class="emoji_btn" style="color:darkred" onclick="tccg.gui.itemRemoveClick()">✖</span>
             <span class="emoji_btn" style="color:seagreen" onclick="tccg.util.showView('gen'); tccg.gui.gen();">✔</span>
             <span class="emoji_btn" style="color:seagreen" onclick="tccg.util.showView('gen'); tccg.gui.genInner();">🔺</span>
             <span class="emoji_btn" style="color:seagreen" onclick="tccg.util.showView('import');">🔻</span>
             <span class="emoji_btn" style="color:seagreen" onclick="tccg.util.showView('info');">🥇</span>
+            <span class="emoji_btn" style="color:deeppink" onclick="tccg.util.showView('help');">❓</span>
+            
         </div>
     </div>
 
@@ -79,11 +81,51 @@
             </tr>
             <tr>
                 <td>横行x</td>
-                <td><input type="number" step="1" id="gui_addItemX"></td>
+                <td><input type="number" step="1" value="0" max="999" min="-999" id="gui_addItemX"></td>
             </tr>
             <tr>
                 <td>竖列y</td>
-                <td><input type="number" step="1" id="gui_addItemY"></td>
+                <td><input type="number" step="1" value="0" max="999" min="-999" id="gui_addItemY"></td>
+            </tr>
+            <tr>
+                <td>复杂度 complexity</td>
+                <td><input type="number" step="1" min="1" max="3" value="1" id="gui_addItemComplexity"></td>
+            </tr>
+            <tr>
+                <td>✴ 特殊研究 isSpecial</td>
+                <td><input type="checkbox" id="gui_addItemIsSpecial"></td>
+            </tr>
+            <tr>
+                <td>🕸 支线研究 isSecondary</td>
+                <td><input type="checkbox" id="gui_addItemIsSecondary"></td>
+            </tr>
+            <tr>
+                <td>⚪ 圆形/被动研究 isRound</td>
+                <td><input type="checkbox" id="gui_addItemIsRound"></td>
+            </tr>
+            <tr>
+                <td>▩ 隐藏研究 isStub</td>
+                <td><input type="checkbox" id="gui_addItemIsStub"></td>
+            </tr>
+            <tr>
+                <td>⚙ 虚拟研究 isVirtual</td>
+                <td><input type="checkbox" id="gui_addItemIsVirtual"></td>
+            </tr>
+            <tr>
+                <td>⛓ 顺序研究 isConcealed</td>
+                <td><input type="checkbox" id="gui_addItemIsConcealed"></td>
+            </tr>
+            <tr>
+                <td>🌫 隐藏研究 isHidden</td>
+                <td><input type="checkbox" id="gui_addItemIsHidden"></td>
+            </tr>
+            <tr>
+                <td>🌌 失落研究 isLost</td>
+                <td><input type="checkbox" id="gui_addItemIsLost"></td>
+            </tr>
+            <tr>
+                <td>🔓 自动解锁 isAutoUnlock</td>
+                <td><input type="checkbox" id="gui_addItemIsAutoUnlock"></td>
             </tr>
             <tr>
                 <td></td>
@@ -100,11 +142,51 @@
             </tr>
             <tr>
                 <td>横行x</td>
-                <td><input type="number" step="1" id="gui_editItemX"></td>
+                <td><input type="number" step="1" max="999" min="-999" value="0" id="gui_editItemX"></td>
             </tr>
             <tr>
                 <td>竖列y</td>
-                <td><input type="number" step="1" id="gui_editItemY"></td>
+                <td><input type="number" step="1" max="999" min="-999" value="0" id="gui_editItemY"></td>
+            </tr>
+            <tr>
+                <td>复杂度 complexity</td>
+                <td><input type="number" step="1" min="1" max="3" value="1" id="gui_editItemComplexity"></td>
+            </tr>
+            <tr>
+                <td>✴ 特殊研究 isSpecial</td>
+                <td><input type="checkbox" id="gui_editItemIsSpecial"></td>
+            </tr>
+            <tr>
+                <td>🕸 支线研究 isSecondary</td>
+                <td><input type="checkbox" id="gui_editItemIsSecondary"></td>
+            </tr>
+            <tr>
+                <td>⚪ 圆形/被动研究 isRound</td>
+                <td><input type="checkbox" id="gui_editItemIsRound"></td>
+            </tr>
+            <tr>
+                <td>▩ 隐藏研究 isStub</td>
+                <td><input type="checkbox" id="gui_editItemIsStub"></td>
+            </tr>
+            <tr>
+                <td>⚙ 虚拟研究 isVirtual</td>
+                <td><input type="checkbox" id="gui_editItemIsVirtual"></td>
+            </tr>
+            <tr>
+                <td>⛓ 顺序研究 isConcealed</td>
+                <td><input type="checkbox" id="gui_editItemIsConcealed"></td>
+            </tr>
+            <tr>
+                <td>🌫 隐藏研究 isHidden</td>
+                <td><input type="checkbox" id="gui_editItemIsHidden"></td>
+            </tr>
+            <tr>
+                <td>🌌 失落研究 isLost</td>
+                <td><input type="checkbox" id="gui_editItemIsLost"></td>
+            </tr>
+            <tr>
+                <td>🔓 自动解锁 isAutoUnlock</td>
+                <td><input type="checkbox" id="gui_editItemIsAutoUnlock"></td>
             </tr>
             <tr>
                 <td></td>
@@ -115,9 +197,10 @@
 
         <div id="view_removeItem"><h3>移除条目</h3>
         <table>
-                
             <tr>
-                <td></td>
+                <td id="out_removeItemInfo"></td>
+            </tr>
+            <tr>                
                 <td><input type="submit" value="删除" onclick="tccg.gui.removeItem();tccg.util.showView('main');tccg.gui.reShow();"></td>
             </tr>
         </table>
@@ -125,7 +208,7 @@
 
         <div id="view_gen">gen</div>
         <div id="view_import"><h3>自中间码导入</h3>
-        <textarea id="in_import_inner"></textarea>
+        <textarea id="in_import_inner" style="width:80%;height:400px"></textarea><br />
         <input type="submit" value="导入" onclick="tccg.gui.fromInner();tccg.util.showView('main');tccg.gui.reShow();">
         </div>
 
@@ -134,6 +217,39 @@
             <p>一个用来生成神秘时代4mod神秘手册研究条目的代码的小工具</p>
             <p id="info_author">-</p>
 
+        </div>
+
+        <div id="view_help"><h3>帮助</h3>
+            
+            研究复杂度, 从 1 到 3<br />
+            complexity<br />
+            <br />
+            特殊研究有一个尖边框, 用来表示是研究里程碑<br />
+            ✴ isSpecial<br />
+            <br />
+            是否可以直接用研究点购买<br />
+            🕸 isSecondary<br />
+            <br />
+            被动研究为圆形图标, 一半用来表示不提供合成表/被动效果的研究, 或者是自动解锁的研究<br />
+            ⚪ isRound<br />
+            <br />
+            隐藏研究不能由通常方式解锁, 只能由侧边系统解锁<br />
+            ▩ isStub<br />
+            <br />
+            虚拟研究完全隐藏, 不会出现在玩家的神秘手册中<br />
+            ⚙ isVirtual<br />
+            <br />
+            顺序研究在前置研究没有解锁之前不会显示在魔导手册<br />
+            ⛓ isConcealed<br />
+            <br />
+            隐藏研究只能经由扫描或者知识碎片发现<br />
+            🌫 isHidden<br />
+            <br />
+            类似于隐藏研究, 但是这不能由知识碎片发现, 只能通过扫描发现<br />
+            🌌 isLost<br />
+            <br />
+            是否自动解锁<br />
+            🔓 isAutoUnlock<br />
         </div>
     </div>
 
@@ -145,7 +261,7 @@
 
 
     <script>
-        tccg.util.initViews(["main", "addItem", "editItem", "removeItem", "gen", "info","import"]);
+        tccg.util.initViews(["main", "addItem", "editItem", "removeItem", "gen", "info", "import","help"]);
         tccg.runtime.stor = new tccg.util.storage();
         tccg.demo.genTable();
         tccg.util.showView('main');
