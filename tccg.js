@@ -103,7 +103,40 @@ var tccg = {};
 					//table += "" + itemThisTime.key;
 					if (itemThisTime != null)
 					{
-						table += "<td class='tableTD' id='td_" + itemThisTime.col + "_" + itemThisTime.row + "' onclick='tccg.gui.tdClick(" + itemThisTime.col + ", " + itemThisTime.row + ")'>";
+						table += "<td class='tableTD' id='td_" +
+							itemThisTime.col + "_" + itemThisTime.row +
+							"' onclick='tccg.gui.tdClick(" + itemThisTime.col + ", " + itemThisTime.row + ")'>";
+						
+						{
+							table += itemThisTime.col+","+itemThisTime.row;
+							if (itemThisTime.complexity === 1)
+								table += "①";
+							if (itemThisTime.complexity === 2)
+								table += "②";
+							if (itemThisTime.complexity === 3)
+								table += "③";
+							if (itemThisTime.isAutoUnlock)
+								table += "🔓";
+							if (itemThisTime.isSpecial)
+								table += "✴";
+							if (itemThisTime.isSecondary)
+								table += "🕸";
+							if (itemThisTime.isRound)
+								table += "⚪";
+							if (itemThisTime.isStub)
+								table += "▩";
+							if (itemThisTime.isVirtual)
+								table += "⚙";
+							if (itemThisTime.isConcealed)
+								table += "⛓";
+							if (itemThisTime.isHidden)
+								table += "🌫";
+							if (itemThisTime.isLost)
+								table += "🌌";
+						}
+						
+						table += "<br>"
+
 						table += itemThisTime.key;
 					}
 					else
@@ -126,7 +159,27 @@ var tccg = {};
 			for (let i = 0; i < tccg.runtime.stor.items.length; i++)
 			{
 				let itemThisTime = tccg.runtime.stor.items[i];
-				ret += '(new ResearchItem("' + itemThisTime.key + '", cata, noneed, ' + itemThisTime.col + ', ' + itemThisTime.row + ', 0,\n\tnew ItemStack(Items.diamond)))\n';
+				ret += '(new ResearchItem("' + itemThisTime.key + '", cata, noneed, ' + itemThisTime.col + ', ' + itemThisTime.row + ', ' + itemThisTime.complexity+',\n\tnew ItemStack(Items.diamond)))\n';
+				{
+					if (itemThisTime.isAutoUnlock)
+						ret += '\t.setAutoUnlock()\n';
+					if (itemThisTime.isSpecial)
+						ret += '\t.setSpecial()\n';
+					if (itemThisTime.isSecondary)
+						ret += '\t.setSecondary()\n';
+					if (itemThisTime.isRound)
+						ret += "\t.setRound()\n";
+					if (itemThisTime.isStub)
+						ret += "\t.setStub()\n";
+					if (itemThisTime.isVirtual)
+						ret += "\t.setVirtual()\n";
+					if (itemThisTime.isConcealed)
+						ret += "\t.setConcealed()\n";
+					if (itemThisTime.isHidden)
+						ret += "\t.setHidden()\n";
+					if (itemThisTime.isLost)
+						ret += "\t.setLost()\n";
+				}
 				ret += '\t.registerResearchItem();\n';
 			}
 			//(new ResearchItem("DES_irisia", cata, noneed, col(0), row(0), 0,
@@ -158,6 +211,17 @@ var tccg = {};
 		this.col = 0;
 		this.row = 0;
 
+		this.complexity = 1;
+		this.isSpecial = false;
+		this.isSecondary = false;
+		this.isRound = false;
+		this.isStub = false;
+		this.isVirtual = false;
+		this.isConcealed = false;
+		this.isHidden = false;
+		this.isLost = false;
+		this.isAutoUnlock = false;
+
 		this.isItem = true;
 		return this;
 	};
@@ -168,6 +232,43 @@ var tccg = {};
 		this.parents = [];
 		this.col = colIn;
 		this.row = rowIn;
+
+		this.complexity = 1;
+		this.isSpecial = false;
+		this.isSecondary = false;
+		this.isRound = false;
+		this.isStub = false;
+		this.isVirtual = false;
+		this.isConcealed = false;
+		this.isHidden = false;
+		this.isLost = false;
+		this.isAutoUnlock = false;
+
+		this.isItem = true;
+		return this;
+	}
+	tccg.util.nodeItemFull =
+		function (keyIn, colIn, rowIn, complexityIn,
+			isSpecialIn, isSecondaryIn,
+			isRoundIn, isStubIn, isVirtualIn,
+			isConcealedIn, isHiddenIn, isLostIn, isAutoUnlockIn)
+	{
+		this.id = Date.now();
+		this.key = keyIn;
+		this.parents = [];
+		this.col = colIn;
+		this.row = rowIn;
+
+		this.complexity = complexityIn;
+		this.isSpecial = isSpecialIn;
+		this.isSecondary = isSecondaryIn;
+		this.isRound = isRoundIn;
+		this.isStub = isStubIn;
+		this.isVirtual = isVirtualIn;
+		this.isConcealed = isConcealedIn;
+		this.isHidden = isHiddenIn;
+		this.isLost = isLostIn;
+		this.isAutoUnlock = isAutoUnlockIn;
 
 		this.isItem = true;
 		return this;
@@ -225,9 +326,19 @@ var tccg = {};
 	// guis
 	tccg.gui.lastX = -9999;
 	tccg.gui.lastY = -9999;
+	tccg.gui.findItem = function ()
+	{
+		for (let i = 0; i < tccg.runtime.stor.items.length; i++) {
+			let itemThisTime = tccg.runtime.stor.items[i];
+			if (itemThisTime.col == tccg.gui.lastX && itemThisTime.row == tccg.gui.lastY) {
+				return itemThisTime;
+			}
+		}
+		return null;
+	}
 	tccg.gui.tdClick = function (x, y)
 	{
-		console.log("clicked : " + x + "," + y);
+		//console.log("clicked : " + x + "," + y);
 		try { document.getElementById("td_" + tccg.gui.lastX + "_" + tccg.gui.lastY).style["background-color"] = ""; } catch (e) {}
 		tccg.gui.lastX = x;
 		tccg.gui.lastY = y;
@@ -237,12 +348,65 @@ var tccg = {};
 	{
 		document.getElementById("view_main").innerHTML = tccg.runtime.stor.toHtmlTable();
 	}
+	// gui的一些按钮
+	tccg.gui.itemEditClick = function ()
+	{
+		let itemThisTime = tccg.gui.findItem();
+		if (itemThisTime!=null)
+		{
+			tccg.util.showView('editItem'); 
+			document.getElementById('gui_editItemName').value = itemThisTime.key; 
+			document.getElementById('gui_editItemX').value = itemThisTime.col; 
+			document.getElementById('gui_editItemY').value = itemThisTime.row;
+			document.getElementById('gui_editItemComplexity').value = itemThisTime.complexity; 
+			document.getElementById('gui_editItemIsSpecial').checked = itemThisTime.isSpecial; 
+			document.getElementById('gui_editItemIsSecondary').checked = itemThisTime.isSecondary;
+			document.getElementById('gui_editItemIsRound').checked = itemThisTime.isRound;
+			document.getElementById('gui_editItemIsStub').checked = itemThisTime.isStub;
+			document.getElementById('gui_editItemIsVirtual').checked = itemThisTime.isVirtual;
+			document.getElementById('gui_editItemIsConcealed').checked = itemThisTime.isConcealed;
+			document.getElementById('gui_editItemIsHidden').checked = itemThisTime.isHidden;
+			document.getElementById('gui_editItemIsLost').checked = itemThisTime.isLost;
+			document.getElementById('gui_editItemIsAutoUnlock').checked = itemThisTime.isAutoUnlock;
+		}
+	}
+	tccg.gui.itemRemoveClick = function ()
+	{
+		let itemThisTime = tccg.gui.findItem();
+		if (itemThisTime != null)
+		{
+			tccg.util.showView('removeItem');
+			let nodeToShow = document.getElementById('out_removeItemInfo');
+			nodeToShow.innerText = itemThisTime.col + "," + itemThisTime.row + " : " + itemThisTime.key;
+		}
+	}
+	// 从gui执行具体功能了
 	tccg.gui.addItem = function ()
 	{
 		let name = document.getElementById("gui_addItemName").value;
 		let x = document.getElementById("gui_addItemX").value;
 		let y = document.getElementById("gui_addItemY").value;
-		let nodeToAdd = new tccg.util.nodeItem(name, x, y);
+		let complexity = document.getElementById('gui_addItemComplexity').value;
+		let isSpecial = document.getElementById('gui_addItemIsSpecial').checked;
+		let isSecondary = document.getElementById('gui_addItemIsSecondary').checked;
+		let isRound=document.getElementById('gui_addItemIsRound').checked;
+		let isStub = document.getElementById('gui_addItemIsStub').checked;
+		let isVirtual = document.getElementById('gui_addItemIsVirtual').checked;
+		let isConcealed = document.getElementById('gui_addItemIsConcealed').checked;
+		let isHidden = document.getElementById('gui_addItemIsHidden').checked;
+		let isLost = document.getElementById('gui_addItemIsLost').checked;
+		let isAutoUnlock = document.getElementById('gui_addItemIsAutoUnlock').checked;
+		/**
+		 * function (keyIn, colIn, rowIn, complexityIn,
+			isSpecialIn, isSecondaryIn,
+			isRoundIn, isStubIn, isVirtualIn,
+			isConcealedIn, isHiddenIn, isLostIn, isAutoUnlockIn)
+		 */
+		let nodeToAdd = new tccg.util.nodeItemFull(name, x, y, complexity,
+			isSpecial, isSecondary,
+			isRound, isStub, isVirtual,
+			isConcealed, isHidden, isLost, isAutoUnlock);
+
 		for (let i = 0; i < tccg.runtime.stor.items.length; i++)
 		{
 			let itemThisTime = tccg.runtime.stor.items[i];
@@ -259,26 +423,26 @@ var tccg = {};
 		}
 		tccg.runtime.stor.addItem(nodeToAdd);
 		tccg.gui.reShow();
-		alert("添加成功");
+		// alert("添加成功");
 		return;
 	}
 	tccg.gui.removeItem = function ()
 	{
-		console.log("lastX lastY : "+tccg.gui.lastX+","+tccg.gui.lastY);
+		//console.log("lastX lastY : "+tccg.gui.lastX+","+tccg.gui.lastY);
 		for (let i = 0; i < tccg.runtime.stor.items.length; i++)
 		{
 			let itemThisTime = tccg.runtime.stor.items[i];
-			console.log("itemThisTime " + itemThisTime.col + "," + itemThisTime.row);
-			console.log("本次 : " + (itemThisTime.col == tccg.gui.lastX));
-			console.log("本次 : " + itemThisTime.row == tccg.gui.lastY);
-			console.log("本次 : "+((itemThisTime.col == tccg.gui.lastX) && (itemThisTime.row == tccg.lastY)));
+			//console.log("itemThisTime " + itemThisTime.col + "," + itemThisTime.row);
+			//console.log("本次 : " + (itemThisTime.col == tccg.gui.lastX));
+			//console.log("本次 : " + itemThisTime.row == tccg.gui.lastY);
+			//console.log("本次 : "+((itemThisTime.col == tccg.gui.lastX) && (itemThisTime.row == tccg.lastY)));
 			if ((itemThisTime.col == tccg.gui.lastX) && (itemThisTime.row == tccg.gui.lastY))
 			{	
 				let name = itemThisTime.key;
 				tccg.runtime.stor.removeItem(name);
 				tccg.gui.lastY = tccg.gui.lastX = -9999;
 				tccg.gui.reShow();
-				alert("删除成功");
+				//alert("删除成功");
 			}
 		}
 	}
@@ -293,6 +457,18 @@ var tccg = {};
 				let nameNew= document.getElementById("gui_editItemName").value;
 				let colNew= document.getElementById("gui_editItemX").value;
 				let rowNew = document.getElementById("gui_editItemY").value;
+
+				let complexity = document.getElementById('gui_editItemComplexity').value;
+				let isSpecial = document.getElementById('gui_editItemIsSpecial').checked;
+				let isSecondary = document.getElementById('gui_editItemIsSecondary').checked;
+				let isRound = document.getElementById('gui_editItemIsRound').checked;
+				let isStub = document.getElementById('gui_editItemIsStub').checked;
+				let isVirtual = document.getElementById('gui_editItemIsVirtual').checked;
+				let isConcealed = document.getElementById('gui_editItemIsConcealed').checked;
+				let isHidden = document.getElementById('gui_editItemIsHidden').checked;
+				let isLost = document.getElementById('gui_editItemIsLost').checked;
+				let isAutoUnlock = document.getElementById('gui_editItemIsAutoUnlock').checked;
+
 				if (colNew == null || colNew == "")
 					colNew = NaN;
 				if (rowNew == null || rowNew == "")
@@ -321,20 +497,29 @@ var tccg = {};
 				if (rowNew > -9999 && rowNew < 9999)
 					itemThisTime.row = rowNew;
 
+				itemThisTime.complexity = complexity;
+				itemThisTime.isSpecial = isSpecial;
+				itemThisTime.isSecondary = isSecondary;
+				itemThisTime.isRound = isRound;
+				itemThisTime.isStub = isStub;
+				itemThisTime.isVirtual = isVirtual;
+				itemThisTime.isConcealed = isConcealed;
+				itemThisTime.isHidden = isHidden;
+				itemThisTime.isLost = isLost;
+				itemThisTime.isAutoUnlock = isAutoUnlock;
+
 				tccg.gui.reShow();
-				alert("修改成功");
+				//alert("修改成功");
 			}
 		}
 	}
 	tccg.gui.gen = function ()
 	{
-		document.getElementById('view_gen').innerText = tccg.runtime.stor.toJavaCode();
-		document.getElementById('view_gen').innerHTML = '<h3>导出为Java代码</h3><code>' + document.getElementById('view_gen').innerHTML + '</code>';
+		document.getElementById('view_gen').innerHTML = '<h3>导出为Java代码</h3><textarea style="width:80%;height:400px">' + tccg.runtime.stor.toJavaCode() + '</textarea>';
 	}
 	tccg.gui.genInner = function ()
 	{
-		document.getElementById('view_gen').innerText = tccg.runtime.stor.toInnerCode();
-		document.getElementById('view_gen').innerHTML = '<h3>导出为中间码</h3>' + document.getElementById('view_gen').innerHTML;
+		document.getElementById('view_gen').innerHTML = '<h3>导出为中间码</h3><textarea style="width:80%;height:400px">' + tccg.runtime.stor.toInnerCode() + '</textarea>';
 	}
 	tccg.gui.fromInner = function ()
 	{
@@ -364,10 +549,9 @@ var tccg = {};
 	// info
 	tccg.info.shortname = "TCCG";
 	tccg.info.fullname = "Thaumcraft Code Generator";
-	tccg.info.version = "0.4.0";
+	tccg.info.version = "0.5.0";
 	tccg.info.author = "Firok";
 	tccg.info.link = "github.com/S2Lab";
-
 	tccg.info.reShow = function ()
 	{
 		document.getElementById('header_logo').innerText = tccg.info.shortname;
