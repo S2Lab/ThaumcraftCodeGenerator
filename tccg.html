@@ -3,14 +3,28 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <title>Thaumcraft Research Page Generator</title>
+    <title>Thaumcraft Code Generator</title>
     <style>
         body{
-            font-size: 24px;
+            font-size: 18px;
             font-family: Georgia,Microsoft YaHei;
             margin:0px;
             padding: 0px;
         }
+        td{
+            border-bottom:1px solid gray;
+        }
+        a{
+            color: darkred;
+            text-decoration: none;
+        }
+        a:hover{
+            color: chartreuse;
+        }
+        a:visited{
+            text-decoration: none;
+        }
+
 
         .btns{
             border:1px solid black;
@@ -21,7 +35,7 @@
             margin-left: 2%;
         }
         .header_box{
-            
+
         }
         .emoji_btn{
             background-color:aliceblue;
@@ -51,29 +65,28 @@
 </head>
 
 <body>
-    <div id="header_bar">
-        <div class="header_box" id="header_logo" style="font-size:125%;display:inline;margin-right:50px">TCCG</div>
-        <div class="header_box" id="header_catas" style="display:inline;">
-            <span class="emoji_btn" style="color:greenyellow" onclick="tccg.demo.genTable();">💫</span>
-            <span class="emoji_btn" style="color:green" onclick="tccg.util.showView('main');tccg.gui.reShow()">👁</span>
-            <span class="emoji_btn" style="color:greenyellow" onclick="tccg.util.showView('addItem')">＋</span>
-            <span class="emoji_btn" style="color:cornflowerblue" onclick="tccg.gui.itemEditClick()">🛠</span>
-            <span class="emoji_btn" style="color:darkred" onclick="tccg.gui.itemRemoveClick()">✖</span>
-            <span class="emoji_btn" style="color:seagreen" onclick="tccg.util.showView('gen'); tccg.gui.gen();">✔</span>
-            <span class="emoji_btn" style="color:seagreen" onclick="tccg.util.showView('gen'); tccg.gui.genInner();">🔺</span>
-            <span class="emoji_btn" style="color:seagreen" onclick="tccg.util.showView('import');">🔻</span>
-            <span class="emoji_btn" style="color:seagreen" onclick="tccg.util.showView('info');">🥇</span>
-            <span class="emoji_btn" style="color:deeppink" onclick="tccg.util.showView('help');">❓</span>
-            
-        </div>
+<div id="header_bar">
+    <div class="header_box" id="header_logo" style="font-size:125%;display:inline;margin-right:50px">TCCG</div>
+    <div class="header_box" id="header_catas" style="display:inline;">
+        <span class="emoji_btn" style="color:greenyellow" onclick="tccg.gui.demoGenClick()">💫</span>
+        <span class="emoji_btn" style="color:green" onclick="tccg.util.showView('main');tccg.gui.reShow()">👁</span>
+        <span class="emoji_btn" style="color:greenyellow" onclick="tccg.util.showView('addItem')">＋</span>
+        <span class="emoji_btn" style="color:cornflowerblue" onclick="tccg.gui.itemEditClick()">✏️</span>
+        <span class="emoji_btn" style="color:darkred" onclick="tccg.gui.itemRemoveClick()">✖</span>
+        <span class="emoji_btn" style="color:seagreen" onclick="tccg.util.showView('gen');">📤</span>
+        <span class="emoji_btn" style="color:seagreen" onclick="tccg.util.showView('import');">📥</span>
+        <span class="emoji_btn" style="color:seagreen" onclick="tccg.util.showView('info');">🛠</span>
+        <span class="emoji_btn" style="color:deeppink" onclick="tccg.util.showView('help');">❓</span>
+
+    </div>
+</div>
+
+<div id="views">
+    <div id="view_main" style="width:100%;overflow:scroll">
+        raws<br>
     </div>
 
-    <div id="views">
-        <div id="view_main" style="width:100%;overflow:scroll">
-            raws<br>
-        </div>
-
-        <div id="view_addItem"><h3>添加条目</h3>
+    <div id="view_addItem"><h3>添加条目</h3>
         <table>
             <tr>
                 <td>条目名称</td>
@@ -132,9 +145,9 @@
                 <td><input type="submit" value="添加" onclick="tccg.gui.addItem(); tccg.util.showView('main');tccg.gui.reShow();"></td>
             </tr>
         </table>
-        </div>
+    </div>
 
-        <div id="view_editItem"><h3>编辑条目</h3>
+    <div id="view_editItem"><h3>编辑条目</h3>
         <table>
             <tr>
                 <td>条目名称</td>
@@ -193,80 +206,135 @@
                 <td><input type="submit" value="修改" onclick="tccg.gui.editItem();tccg.util.showView('main');tccg.gui.reShow();"></td>
             </tr>
         </table>
-        </div>
+    </div>
 
-        <div id="view_removeItem"><h3>移除条目</h3>
+    <div id="view_removeItem"><h3>移除条目</h3>
         <table>
             <tr>
                 <td id="out_removeItemInfo"></td>
             </tr>
-            <tr>                
+            <tr>
                 <td><input type="submit" value="删除" onclick="tccg.gui.removeItem();tccg.util.showView('main');tccg.gui.reShow();"></td>
             </tr>
         </table>
-        </div>
+    </div>
 
-        <div id="view_gen">gen</div>
-        <div id="view_import"><h3>自中间码导入</h3>
+    <div id="view_gen">
+        <input type="submit" value="生成Java代码" onclick="tccg.gui.gen();">
+        <input type="submit" value="生成中间码" onclick="tccg.gui.genInner();">
+        <div id="out_gen"></div>
+    </div>
+
+    <div id="view_import"><h3>自中间码导入</h3>
         <textarea id="in_import_inner" style="width:80%;height:400px"></textarea><br />
         <input type="submit" value="导入" onclick="tccg.gui.fromInner();tccg.util.showView('main');tccg.gui.reShow();">
-        </div>
+    </div>
 
-        <div id="view_info"><h3>信息</h3>
+    <div id="view_info"><h3>设置</h3>
+        <table>
+            <tr>
+                <td>启用生成示例按钮</td>
+                <td><input type="checkbox" id="set_enable_demo" checked="true" onclick="tccg.info.debug=!tccg.info.debug;"></td>
+            </tr>
+            <tr>
+                <td>日间主题</td>
+                <td><input type="submit" value="应用" onclick="tccg.gui.themeDayClick()"></td>
+            </tr>
+            <tr>
+                <td>夜间主题</td>
+                <td><input type="submit" value="应用" onclick="tccg.gui.themeNightClick()"></td>
+            </tr>
+        </table>
+
+    </div>
+
+    <div id="view_help"><h3>帮助</h3>
+        <table>
+            <tr>
+                <td><span class="emoji_btn" style="color:greenyellow">💫</span></td>
+                <td><span class="emoji_btn" style="color:green">👁</span></td>
+                <td><span class="emoji_btn" style="color:greenyellow">＋</span></td>
+                <td><span class="emoji_btn" style="color:cornflowerblue">✏️</span></td>
+                <td><span class="emoji_btn" style="color:darkred">✖</span></td>
+            </tr>
+            <tr>
+                <td>生成示例</td>
+                <td>主视图</td>
+                <td>添加条目</td>
+                <td>编辑条目</td>
+                <td>删除条目</td>
+            </tr>
+            <tr>
+                <td><span class="emoji_btn" style="color:seagreen">📤</span></td>
+                <td><span class="emoji_btn" style="color:seagreen">📥</span></td>
+                <td><span class="emoji_btn" style="color:seagreen">🛠</span></td>
+                <td><span class="emoji_btn" style="color:deeppink">❓</span></td>
+            </tr>
+            <tr>
+                <td>导入代码</td>
+                <td>自中间码导入</td>
+                <td>设置</td>
+                <td>帮助</td>
+            </tr>
+        </table>
+
+        <p>
+            研究复杂度, 从 1 到 3<br />
+            complexity
+        </p>
+        <p>
+            特殊研究有一个尖边框, 一般用表示里程碑性的重要研究<br />
+            ✴ isSpecial</p>
+        <p>
+            是否可以直接用研究点购买<br />
+            🕸 isSecondary</p>
+        <p>
+            被动研究为圆形图标, 一般用来表示不提供合成表/被动效果的研究, 或者是自动解锁的研究<br />
+            ⚪ isRound</p>
+        <p>
+            隐藏研究不能由通常方式解锁, 只能由侧边系统解锁<br />
+            ▩ isStub</p>
+        <p>
+            虚拟研究完全隐藏, 不会出现在玩家的神秘手册中, 用来处理一些特殊逻辑<br />
+            ⚙ isVirtual</p>
+        <p>
+            顺序研究在前置研究没有解锁之前不会显示在魔导手册<br />
+            ⛓ isConcealed</p>
+        <p>
+            隐藏研究只能经由扫描或者知识碎片发现<br />
+            🌫 isHidden</p>
+        <p>
+            类似于隐藏研究, 但是这不能由知识碎片发现, 只能通过扫描发现<br />
+            🌌 isLost</p>
+        <p>
+            是否自动解锁<br />
+            🔓 isAutoUnlock</p>
+
+        <div style="background-color:darkslategray" >
             <h2 id="info_fullname">-</h2><h4 id="info_version">-</h4>
             <p>一个用来生成神秘时代4mod神秘手册研究条目的代码的小工具</p>
             <p id="info_author">-</p>
-
+            <p><a href="#" id="info_link">View on Github</a></p>
         </div>
 
-        <div id="view_help"><h3>帮助</h3>
-            
-            研究复杂度, 从 1 到 3<br />
-            complexity<br />
-            <br />
-            特殊研究有一个尖边框, 用来表示是研究里程碑<br />
-            ✴ isSpecial<br />
-            <br />
-            是否可以直接用研究点购买<br />
-            🕸 isSecondary<br />
-            <br />
-            被动研究为圆形图标, 一半用来表示不提供合成表/被动效果的研究, 或者是自动解锁的研究<br />
-            ⚪ isRound<br />
-            <br />
-            隐藏研究不能由通常方式解锁, 只能由侧边系统解锁<br />
-            ▩ isStub<br />
-            <br />
-            虚拟研究完全隐藏, 不会出现在玩家的神秘手册中<br />
-            ⚙ isVirtual<br />
-            <br />
-            顺序研究在前置研究没有解锁之前不会显示在魔导手册<br />
-            ⛓ isConcealed<br />
-            <br />
-            隐藏研究只能经由扫描或者知识碎片发现<br />
-            🌫 isHidden<br />
-            <br />
-            类似于隐藏研究, 但是这不能由知识碎片发现, 只能通过扫描发现<br />
-            🌌 isLost<br />
-            <br />
-            是否自动解锁<br />
-            🔓 isAutoUnlock<br />
-        </div>
     </div>
 
-    <div id="ctrls" style="position:fixed;bottom:0px;width:100%;display:none">
-        <div class="btns" onclick="tccg.util.showView('main');">main</div>
-        <div class="btns" onclick="tccg.util.showView('addItem');">add Item</div>
-    </div>
+</div>
+
+<div id="ctrls" style="position:fixed;bottom:0px;width:100%;display:none">
+    <div class="btns" onclick="tccg.util.showView('main');">main</div>
+    <div class="btns" onclick="tccg.util.showView('addItem');">add Item</div>
+</div>
 
 
 
-    <script>
-        tccg.util.initViews(["main", "addItem", "editItem", "removeItem", "gen", "info", "import","help"]);
-        tccg.runtime.stor = new tccg.util.storage();
-        tccg.demo.genTable();
-        tccg.util.showView('main');
-        tccg.info.reShow();
-    </script>
+<script>
+    tccg.util.initViews(["main", "addItem", "editItem", "removeItem", "gen", "info", "import","help"]);
+    tccg.runtime.stor = new tccg.util.storage();
+    tccg.demo.genTable();
+    tccg.util.showView('main');
+    tccg.info.reShow();
+</script>
 </body>
 
 </html>
